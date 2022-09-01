@@ -1,20 +1,28 @@
 import React, { Component } from 'react';
 import { Card, Table } from 'antd';
-import axios from 'axios';
+// import axios from 'axios';
+import axios from './../../axios/index'
 export default class BasicTable extends Component {
     state={
         dataSource2:""
     }
     //动态获取mock
     request=()=>{
-        axios.get("https://mobile-ms.uat.homecreditcfc.cn/mock/6305ed0e4fab890028c57c5e/bikeapi/table/list")
-        .then((res)=>{
-            if(res.status===200 && res.data.code===0){
-                // console.log(res)
-                this.setState({
-                    dataSource2:res.data.result
-                })
+        axios.ajax({
+          url:"/table/list",
+          data:{
+            parmas:{
+              page:1
             }
+          }
+        }).then((res)=>{//获取到的是整个数据
+          // 判断res.code是不是等于0
+          if(res.code === 0){
+            //更改DataSource2的值
+            this.setState({
+              dataSource2:res.result.list
+            })
+          }
         })
     }
     componentDidMount(){
