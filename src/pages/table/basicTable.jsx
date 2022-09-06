@@ -13,7 +13,8 @@ export default class BasicTable extends Component {
           data:{
             parmas:{
               page:1
-            }
+            },
+            // isShowLoading:false
           }
         }).then((res)=>{//获取到的是整个数据
           // 判断res.code是不是等于0

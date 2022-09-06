@@ -2,6 +2,11 @@ import axios from 'axios';
 import { Modal } from 'antd';
 export default class Axios{
     static ajax(options){
+        let loading;
+        if(options.data && options.data.isShowLoading !== false){
+            loading = document.getElementById('ajaxLoading');
+            loading.style.display = 'block';
+        }
         let baseApi="https://mobile-ms.uat.homecreditcfc.cn/mock/6305ed0e4fab890028c57c5e/bikeapi";
         return new Promise((resolve,reject) => {
             axios({
@@ -11,9 +16,13 @@ export default class Axios{
                 timeout:5000,
                 params: (options.data.params && options.data) || ''
             }).then((response)=>{
-                if(response.status === '200'){
+                if(options.data && options.data.isShowLoading !== false){
+                    loading = document.getElementById('ajaxLoading');
+                    loading.style.display = 'none';
+                }
+                if(response.status === 200){
                     let res=response.data;
-                    if(res.code === '0'){
+                    if(res.code === 0){
                         // console.log(res)
                         resolve(res);
                         // res是整个数据，包括了code： 0   msg：""     
