@@ -1,18 +1,24 @@
 import React, { Component } from 'react';
-import { Card, Table } from 'antd';
+import { Card, Table, Modal, message, Button} from 'antd';
 // import axios from 'axios';
 import axios from './../../axios/index'
+import utils from '../../utils/utils';
 export default class BasicTable extends Component {
     state={
-        dataSource2:""
+        dataSource2:"",
+        current:1,
     }
+    params = {
+      page:1
+    };
     //动态获取mock
     request=()=>{
+      let _this = this;
         axios.ajax({
           url:"/table/list",
           data:{
-            parmas:{
-              page:1
+            params:{
+              page:this.params.page
             },
             // isShowLoading:false
           }
@@ -20,14 +26,50 @@ export default class BasicTable extends Component {
           // 判断res.code是不是等于0
           if(res.code === 0){
             //更改DataSource2的值
+            res.result.list.map((item,index)=>{
+              item.key = index;
+            })
             this.setState({
-              dataSource2:res.result.list
+              dataSource2:res.result.list,
+              selectedRowKeys:[],
+              selectedRows:null,
+              pagination:utils.pagination(res,(current)=>{
+                _this.params.page = current;
+                this.request()
+              })
             })
           }
         })
     }
+    onRowClick = (record,index)=>{
+      Modal.info({
+        title: '信息',
+        content:`用户名：${record.userName}, 用户爱好: ${record.interest}}`
+      })
+      let selectKey=[index];
+      this.setState({
+        selectedRowKeys:selectKey,
+        selectedItem:record,
+      })
+    }
     componentDidMount(){
         this.request()
+    }
+    //多选删除
+    handleDelete = () => {
+      let rows = this.state.selectedRows;
+      let ids  = [];
+      rows.map((item)=>{
+        ids.push(item.id)
+      })
+      Modal.confirm({
+        title:'信息',
+        content: `是否删除 ${ids.join(',')}`,
+        onOk: ()=>{
+          message.success("删除成功");
+          this.request();
+        }
+      })
     }
     render() {
         const dataSource = [
@@ -49,8 +91,11 @@ export default class BasicTable extends Component {
                 address: '西湖区湖底公园1号',
                 time:"09:00"
             },
+            
         ];
-
+        dataSource.map((item,index)=>{
+          item.key= index;
+        })
         const columns = [{
             title: "id",
             dataIndex: "id"
@@ -104,6 +149,22 @@ export default class BasicTable extends Component {
             dataIndex: "time"
           }
         ];
+        const { selectedRowKeys } = this.state;
+        const rowSelection = {
+          type: 'radio',
+          selectedRowKeys
+        }
+        const rowCheckSelection = {
+          type: 'checkbox',
+          selectedRowKeys,
+          onChange: (selectedRowKeys,selectedRows) => {
+            
+            this.setState({
+              selectedRowKeys,
+              selectedRows
+            })
+          }
+        }
       
         return (
             <div>
@@ -120,6 +181,51 @@ export default class BasicTable extends Component {
                         columns={columns}
                         dataSource={this.state.dataSource2}
                         bordered
+                        // pagination={false}
+                    />
+                </Card>
+                <Card title="mock-单选" className='card-wrap'>
+                    <Table 
+                        columns={columns}
+                        dataSource={this.state.dataSource2}
+                        bordered
+                        rowSelection={rowSelection}
+                        onRow={(record,index) => {
+                          return {
+                            onClick:()=>{
+                              this.onRowClick(record,index);
+                            }
+                          }
+                        }}
+                        // pagination={false}
+                    />
+                </Card>
+                <Card title="mock-单选" className='card-wrap'>
+                  <div style={{marginBottom: '10px'}}>
+                    <Button onClick={this.handleDelete}>Delete</Button>
+                  </div>
+                    <Table 
+                        columns={columns}
+                        dataSource={this.state.dataSource2}
+                        bordered
+                        rowSelection={rowCheckSelection}
+                        onRow={(record,index) => {
+                          return {
+                            onClick:()=>{
+                              this.onRowClick(record,index);
+                            }
+                          }
+                        }}
+                        // pagination={false}
+                    />
+                </Card>
+                <Card title="mock-分页" className='card-wrap'>
+                  
+                    <Table 
+                        columns={columns}
+                        dataSource={this.state.dataSource2}
+                        bordered
+                        pagination={this.state.pagination}
                         // pagination={false}
                     />
                 </Card>
