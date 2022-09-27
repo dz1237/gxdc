@@ -14,6 +14,7 @@ import Login from './pages/form/login';
 import Reg from './pages/form/reg';
 import BasicTable from './pages/table/basicTable';
 import HighTable from './pages/table/highTable';
+import City from './pages/city/index';
 import NoMatch from './pages/nomatch';
 
 export default class IRouter extends React.Component {
@@ -37,6 +38,7 @@ export default class IRouter extends React.Component {
                                 <Route path='/admin/form/reg' component={Reg} />
                                 <Route path='/admin/table/basic' component={BasicTable} />
                                 <Route path='/admin/table/high' component={HighTable} />
+                                <Route path='/admin/city' component={City} />
                                
                             
                                 

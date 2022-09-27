@@ -7,7 +7,9 @@ export default class Axios{
             loading = document.getElementById('ajaxLoading');
             loading.style.display = 'block';
         }
-        let baseApi="https://mobile-ms.uat.homecreditcfc.cn/mock/6305ed0e4fab890028c57c5e/bikeapi";
+        // let baseApi="https://mobile-ms.uat.homecreditcfc.cn/mock/6305ed0e4fab890028c57c5e/bikeapi";
+        let baseApi="https://mobile-ms.uat.homecreditcfc.cn/mock/6210640d0b5aa1002717e9ff/example_copy";
+        
         return new Promise((resolve,reject) => {
             axios({
                 url: options.url,
