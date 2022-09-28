@@ -55,3 +55,8 @@
   position: relative;
   padding: 20px;
 }
+.content-warp {
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  margin-top: -3px;
+}
